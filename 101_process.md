@@ -166,3 +166,43 @@ Difference lies in the possibilities for the address space of the child relative
 - **On UNIX system zombie process are inherited by init as orpahns and killed off.**
 
 > Note: UNIX [nohup](https://linux.die.net/man/1/nohup) command allows a child to continue executing after its parent has exited.
+
+<br/> 
+
+## 12. Can 2 different processes access or change data of each other address space?
+Yes it is possible even when processes don't have shared memory.The Linux operating system provides [ptrace](https://man7.org/linux/man-pages/man2/ptrace.2.html) system call by which we can not only examine but change the tracee's memory.
+>Further Reading: https://stackoverflow.com/questions/54263292/is-it-possible-for-one-process-to-change-the-value-of-a-variable-in-another-proc#:~:text=Yes%2C%20it%20is%20possible.
+
+<br/> 
+
+## 13. Can 2 processes use the same library (for eg: libc is required to every process)? How?
+Yes, Rather than creating separate copies of the library in each process, the os can arrange for multiple processes to share a single copy of this code by mapping the appropriate virtual pages in differenct processes to the same physical pages.
+
+<br/> 
+
+## 14. How can a debugger attach itself to a running process and change data of that process?
+Using ptrace sys call.
+https://stackoverflow.com/questions/26032633/how-does-a-debugger-peek-into-another-process-memory
+
+<br/> 
+
+## 15. Concurrency vs parallelism
+```cpp
+Concurrency                 Concurrency + parallelism
+(Single-Core CPU)           (Multi-Core CPU)
+ ___                         ___ ___
+|th1|                       |th1|th2|
+|   |                       |   |___|
+|___|___                    |   |___
+    |th2|                   |___|th2|
+ ___|___|                    ___|___|
+|th1|                       |th1|
+|___|___                    |   |___
+    |th2|                   |   |th2|
+```
+In both cases we have concurrency from the mere fact that we have more than one thread running.
+
+If we ran this program on a computer with a single CPU core, the OS would be switching between the two threads, allowing one thread to run at a time.
+
+If we ran this program on a computer with a multi-core CPU then we would be able to run the two threads in parallel - side by side at the exact same time.
+[Source](https://stackoverflow.com/questions/1050222/what-is-the-difference-between-concurrency-and-parallelism)
